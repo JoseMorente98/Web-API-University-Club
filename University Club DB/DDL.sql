@@ -13,7 +13,7 @@ CREATE TABLE TipoUsuarios(
 CREATE TABLE Usuarios(
 	UsuarioID INT AUTO_INCREMENT NOT NULL,
 	Nombre VARCHAR(50) NOT NULL,
-	Apellido VARCHAR(50) NOT NULL,
+	Apellido VARCHAR(50) NOT NULL,	
 	FechaNacimiento DATE NOT NULL,
 	Nit VARCHAR(10) NOT NULL,
 	Profesion VARCHAR(50) NOT NULL,
@@ -23,6 +23,7 @@ CREATE TABLE Usuarios(
 	FechaRegistro DATE NOT NULL,
 	Activo TINYINT NOT NULL,
 	TipoUsuarioID INT NOT NULL,
+	Imagen LONGBLOB NULL,
 	PRIMARY KEY(UsuarioID),
 	FOREIGN KEY(TipoUsuarioID) REFERENCES TipoUsuarios(TipoUsuarioID)
 	ON UPDATE CASCADE
@@ -81,8 +82,8 @@ BEGIN
 	SET _existe = (SELECT COUNT(*) FROM Usuarios WHERE Correo = _correo);
 	IF(_existe = 0) THEN
 	INSERT INTO Usuarios(Nombre, Apellido, FechaNacimiento, Nit, Profesion, 
-		GradoAcademico, Correo, Contrasena, FechaRegistro, Activo, TipoUsuarioID) 
-			VALUES(_nombre, _apellido, _fechaNacimiento, "C/F", "N/A", "N/A", _correo, _contrasena, NOW(), 1, _tipoUsuarioID);
+		GradoAcademico, Correo, Contrasena, FechaRegistro, Activo, TipoUsuarioID, Imagen) 
+			VALUES(_nombre, _apellido, _fechaNacimiento, "C/F", "N/A", "N/A", _correo, _contrasena, NOW(), 1, _tipoUsuarioID, NULL);
 		SELECT _existe;
 	ELSE
 		SELECT _existe;
@@ -139,9 +140,9 @@ BEGIN
 	
 	IF(_existe = 0) THEN
 	INSERT INTO Usuarios(Nombre, Apellido, FechaNacimiento, Nit, Profesion, 
-		GradoAcademico, Correo, Contrasena, FechaRegistro, Activo, TipoUsuarioID) 
+		GradoAcademico, Correo, Contrasena, FechaRegistro, Activo, TipoUsuarioID, Imagen) 
 			VALUES(_nombre, _apellido, _fechaNacimiento, _nit, _profesion, 
-				_gradoAcademico, _correo, _contrasena, NOW(), 0, 3);
+				_gradoAcademico, _correo, _contrasena, NOW(), 0, 3, NULL);
 		SET _usuarioID = LAST_INSERT_ID();
 		CALL SP_AgregarDetalleCarrera(_usuarioID, _carreraID, _fechaGraduacion);
 		SELECT _existe;
@@ -197,6 +198,15 @@ BEGIN
 	ELSE
 		UPDATE Usuarios SET Activo = 0 WHERE UsuarioID = _usuarioID;
 	END IF;
+END;
+$$
+
+-- SP ACTUALIZAR IMAGEN
+DELIMITER $$
+CREATE PROCEDURE SP_ActualizarImagen
+(IN _usuarioID INT, _imagen LONGBLOB)
+BEGIN
+	UPDATE Usuarios SET Imagen = _imagen WHERE UsuarioID = _usuarioID;
 END;
 $$
 
@@ -342,7 +352,7 @@ CREATE PROCEDURE SP_MostrarUsuario
 BEGIN
 	SELECT UsuarioID, Nombre, Apellido, 
 	DATE_FORMAT(FechaNacimiento, "%Y-%m-%d") AS 'FechaNacimiento', 
-		Nit, Profesion, GradoAcademico, Correo, Contrasena 
+		Nit, Profesion, GradoAcademico, Correo, Contrasena, Imagen
 			FROM Usuarios WHERE UsuarioID = _usuarioID;
 END;
 $$
@@ -406,7 +416,7 @@ CREATE PROCEDURE SP_MostrarMiembrosCarrera
 (IN _usuarioID INT, _carreraID INT)
 BEGIN
 	DECLARE _fechaGraduacion DATE;
-	SET _fechaGraduacion = (SELECT FechaGraduacion FROM DetalleCarreras WHERE UsuarioID = _usuarioID);
+	SET _fechaGraduacion = (SELECT FechaGraduacion FROM DetalleCarreras WHERE UsuarioID = _usuarioID AND CarreraID = _carreraID);
 	SELECT Usuarios.Nombre, Usuarios.Apellido, DATE_FORMAT(Usuarios.FechaNacimiento, "%d/%m/%Y") AS 'FechaNacimiento', 
 	Usuarios.Profesion, Usuarios.Correo, CarreraID, DATE_FORMAT(FechaGraduacion, "%Y") AS 'FechaGraduacion' FROM DetalleCarreras
 		INNER JOIN Usuarios ON (DetalleCarreras.UsuarioID = Usuarios.UsuarioID)
