@@ -131,4 +131,22 @@ usuarioRoute.put('/usuarios/active/:usuarioID', function (req, res, next) {
     });
 });
 
+usuarioRoute.put('/usuariosProfile/', service.verificar, function (req, res, next) {
+    var data = {
+        UsuarioID: req.usuario.UsuarioID,
+        Imagen: req.body.Imagen
+    }
+    usuario.updateImagen(data, function (resultado) {
+        if (typeof resultado !== 'undefined') {
+            console.log(resultado);
+            res.json({
+                estado: true,
+                mensaje: "Se ha actualizado la foto de perfil."
+            });
+        } else {
+            res.json({ "mensaje": "No se pudo actualizar la foto de perfil." });
+        }
+    });
+});
+
 module.exports = usuarioRoute;

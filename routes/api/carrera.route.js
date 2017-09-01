@@ -2,6 +2,32 @@ var express = require('express');
 var carreraRoute = express.Router();
 var carrera = require('../../controller/carrera.controller');
 
+/**
+ * @api {get} /carreras/ GET Carrera. 
+ * @apiName GetCarrera
+ * @apiGroup Carreras
+ *
+ * 
+ *
+ * @apiSuccess {Integer} CarreraID ID de la carrera.
+ * @apiSuccess {String} Nombre  Nombre de la carrera.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "CarreraID": 1,
+ *       "Nombre": "Ingenieria en Sistemas"
+ *     }
+ *
+ * @apiError CarreraNoEncontrada No hay Carreras.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "No hay carreras"
+ *     }
+ */
+
 //GET CARRERAS
 carreraRoute.get('/carreras/', function(req, res, next) {
   carrera.selectAll(function(resultados) {
@@ -12,6 +38,32 @@ carreraRoute.get('/carreras/', function(req, res, next) {
     }
   });
 });
+
+/**
+ * @api {get} /carreras/:carreraID GET Carrera. 
+ * @apiName GetCarrera
+ * @apiGroup Carreras
+ *
+ * 
+ *
+ * @apiSuccess {Integer} CarreraID ID de la carrera.
+ * @apiSuccess {String} Nombre  Nombre de la carrera.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "CarreraID": 1,
+ *       "Nombre": "Ingenieria en Sistemas"
+ *     }
+ *
+ * @apiError CarreraNoEncontrada No hay Carreras.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "No se encontró la carrera."
+ *     }
+ */
 
 //GET CARRERA
 carreraRoute.get('/carreras/:carreraID',
@@ -25,6 +77,31 @@ carreraRoute.get('/carreras/:carreraID',
       }
   });
 });
+
+/**
+ * @api {post} /carreras/ POST Carrera.
+ * @apiName PostCarrera
+ * @apiGroup Carreras
+ *
+ * @apiParam {String} Nombre Nombre de la carrera.
+ *
+ * @apiSuccess {Integer} CarreraID Id de la carrera.
+ * @apiSuccess {String} Nombre  Nombre de la carrera.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "CarreraID": 1,
+ *       "Nombre": "Ingenieria en Sistemas"
+ *     }
+ *
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "No se pudo ingresar la carrera."
+ *     }
+ */
 
 //POST CARRERA
 carreraRoute.post('/carreras', function(req, res, next) {
@@ -51,6 +128,32 @@ carreraRoute.post('/carreras', function(req, res, next) {
   }
   });
 });
+
+/**
+ * @api {put} /carreras/ PUT Categoría.
+ * @apiName PutCarrera
+ * @apiGroup Carreras
+ *
+ * @apiParam {String} CarreraID ID de la carrera.
+ * @apiParam {String} Nombre de la carrera.
+ *
+ * @apiSuccess {String} Nombre Actualiza Nombre de la carrera.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "CarreraID": 1,
+ *       "Nombre": "Ingenieria en Sistemas"
+ *     }
+ *
+ * @apiError CarreraNoEncontrada No hay carreras.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "No se actualizó la carrera."
+ *     }
+ */
 
 //PUT CARRERA
 carreraRoute.put('/carreras/:carreraID', function(req, res, next){
@@ -80,6 +183,29 @@ carreraRoute.put('/carreras/:carreraID', function(req, res, next){
     }
   });
 });
+
+/**
+ * @api {Delete} /carreras/:carreraID DELETE Carrera.
+ * @apiName DeleteCarrera
+ * @apiGroup Carreras
+ *
+ *
+ * @apiSuccess {Integer} CarreraID ID de la carrera.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "CarreraID": 1
+ *     }
+ *
+ * @apiError CarreraNoEncontrada No hay carreras.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "No se pudo eliminar la carrera."
+ *     }
+ */
 
 //DELETE CARRERA
 carreraRoute.delete('/carreras/:carreraID', function(req, res, next){

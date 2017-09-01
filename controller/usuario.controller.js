@@ -122,4 +122,19 @@ usuario.updateActive = function(usuarioID, callback) {
   }
 }
 
+//ACTUALIZAR IMAGEN
+usuario.updateImagen = function(data, callback) {
+  if(database) {
+    var query = "CALL SP_ActualizarImagen(?)";
+    database.query(query, [data.UsuarioID, data.Imagen],
+    function(error, resultado) {
+      if(error) {
+        throw error;
+      } else {
+        callback(resultado);
+      }
+    });
+  }
+}
+
 module.exports = usuario;
